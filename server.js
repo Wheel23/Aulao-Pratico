@@ -52,7 +52,7 @@ server.post('/users', async (req, res) => {
 
     }
 
-    return res.send('usuario cadastrado com sucesso!!')
+    return res.send('usuário cadastrado com sucesso!!')
 })
 
 server.post('/login', async (req, res) => {
@@ -77,7 +77,39 @@ server.post('/login', async (req, res) => {
     }
 
 })
- 
+
+server.get('/chamados', async(req, res) => {
+    try {
+        const response = await sql.query('SELECT * FROM chamados')
+        return res.json({resuts: response.rows, ok:true})
+
+    } catch (error) {
+        res.status(500).json({message: error, ok: false})
+        
+    }
+    
+})
+
+server.post('/chamados', async (req, res) => {
+    const title = req.body.title;
+    const description = req.body.description;
+    const status = req.body.status;
+    const observations = req.body.observations;
+    const responsible = req.body.responsible;
+
+    try {
+        const response = await sql.query(
+            'INSERT INTO chamados (title, description, status, observations, responsible) VALUES ($1, $2, $3, $4, $5)',
+            [title, description, status, observations, responsible]
+        )
+        res.status(201).json({message: 'Chamado adicionado com sucesso!!', ok: true})
+        
+    } catch (error) {
+        res.status(500).json({message: error, ok: false})
+
+    }
+})
+
 
 
 
